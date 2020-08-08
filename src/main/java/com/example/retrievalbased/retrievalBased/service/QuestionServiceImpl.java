@@ -55,6 +55,6 @@ public class QuestionServiceImpl implements QuestionService {
       q.setPubDate(now);
     }
     System.out.println("{question: " + q + ", answer: " + answer + "}");
-    return questionRepository.save(q);
+    return save(q);
   }
 }
