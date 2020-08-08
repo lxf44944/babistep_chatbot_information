@@ -7,7 +7,7 @@ import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Entity
-@Data // lombok注解，会自动生成setter/getter,需要引入lombok的包才能使用。
+@Data
 @Document(indexName = "retrievalBased", type = "answer", refreshInterval = "0s")
 public class Answer implements Model {
   @Id

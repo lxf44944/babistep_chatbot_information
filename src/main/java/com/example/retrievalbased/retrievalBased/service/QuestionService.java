@@ -8,6 +8,8 @@ import java.util.List;
 public interface QuestionService {
   Question save(Question q);
 
+  List<Question> elasticsearchFindByQuestionText(String questionText);
+
   List<Question> findByQuestionText(String questionText);
 
   Answer getSimilarQuestionAnswer(String questionText);

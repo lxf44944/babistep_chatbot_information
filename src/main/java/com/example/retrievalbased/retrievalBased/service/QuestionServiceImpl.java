@@ -2,6 +2,7 @@ package com.example.retrievalbased.retrievalBased.service;
 
 import com.example.retrievalbased.retrievalBased.model.Answer;
 import com.example.retrievalbased.retrievalBased.model.Question;
+import com.example.retrievalbased.retrievalBased.repository.ElasticSearchQuestionRepository;
 import com.example.retrievalbased.retrievalBased.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,19 @@ import java.util.List;
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
+  // manipulate ElasticSearch
+  @Autowired private ElasticSearchQuestionRepository elasticSearchQuestionRepository;
+  // manipulate MySQL
   @Autowired private QuestionRepository questionRepository;
 
   @Override
   public Question save(Question q) {
-    return questionRepository.save(q);
+    return elasticSearchQuestionRepository.save(q);
+  }
+
+  @Override
+  public List<Question> elasticsearchFindByQuestionText(String questionText) {
+    return elasticSearchQuestionRepository.findByQuestionText(questionText);
   }
 
   @Override
@@ -41,7 +50,7 @@ public class QuestionServiceImpl implements QuestionService {
   public Question ask(String questionText) {
     Answer answer = getSimilarQuestionAnswer(questionText);
     // 查找是否有人问过相同问题
-    List<Question> questions = findByQuestionText(questionText);
+    List<Question> questions = elasticsearchFindByQuestionText(questionText);
     Question q = new Question();
     if (questions.size() > 0) {
       // 相同问题记录

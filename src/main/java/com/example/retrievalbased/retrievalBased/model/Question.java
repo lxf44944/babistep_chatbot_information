@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Data // lombok注解，会自动生成setter/getter,需要引入lombok的包才能使用。
+@Data
 @Document(indexName = "retrievalBased", type = "question", refreshInterval = "0s")
 public class Question implements Model {
   @Id
