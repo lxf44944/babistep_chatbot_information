@@ -3,9 +3,12 @@ package com.example.retrievalbased.retrievalBased.model;
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.List;
+import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 @Entity
+@Data // lombok注解，会自动生成setter/getter,需要引入lombok的包才能使用。
+@Document(indexName = "retrievalBased", type = "answer", refreshInterval = "0s")
 public class Answer implements Model {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

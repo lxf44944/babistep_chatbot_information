@@ -1,8 +1,14 @@
 package com.example.retrievalbased.retrievalBased.model;
 
+import lombok.Data;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import javax.persistence.*;
 import java.util.*;
 
+@Entity
+@Data // lombok注解，会自动生成setter/getter,需要引入lombok的包才能使用。
+@Document(indexName = "retrievalBased", type = "question", refreshInterval = "0s")
 public class Question implements Model {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +21,7 @@ public class Question implements Model {
 
   private String questionText;
   private int votes;
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date pubDate;
 
@@ -39,14 +46,7 @@ public class Question implements Model {
   }
 
   public Answer getBestAnswer() {
-    Collections.sort(
-        answers,
-        new Comparator<Answer>() {
-          @Override
-          public int compare(Answer o1, Answer o2) {
-            return o1.getVotes() - o2.getVotes();
-          }
-        });
+    answers.sort(Comparator.comparingInt(Answer::getVotes));
     return answers.get(answers.size() - 1);
   }
 
