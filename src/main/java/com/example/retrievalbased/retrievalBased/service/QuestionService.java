@@ -1,6 +1,16 @@
 package com.example.retrievalbased.retrievalBased.service;
 
-import org.springframework.stereotype.Service;
+import com.example.retrievalbased.retrievalBased.model.Answer;
+import com.example.retrievalbased.retrievalBased.model.Question;
 
-@Service
-public class QuestionService {}
+import java.util.List;
+
+public interface QuestionService {
+  Question save(Question q);
+
+  List<Question> findByQuestionText(String questionText);
+
+  Answer getSimilarQuestionAnswer(String questionText);
+
+  Question ask(String questionText);
+}

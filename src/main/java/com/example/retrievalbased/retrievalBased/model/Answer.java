@@ -15,13 +15,42 @@ public class Answer implements Model {
 
   private int votes;
 
-  @OneToMany(
-      mappedBy = "answer",
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  private List<Question> questions;
+  @ManyToOne @JsonIgnore private Question question;
 
   @Override
   public String getString() {
     return answerText;
+  }
+
+  public int getVotes() {
+    return votes;
+  }
+
+  public void setVotes(int votes) {
+    this.votes = votes;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getAnswerText() {
+    return answerText;
+  }
+
+  public void setAnswerText(String answerText) {
+    this.answerText = answerText;
+  }
+
+  public Question getQuestion() {
+    return question;
+  }
+
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 }

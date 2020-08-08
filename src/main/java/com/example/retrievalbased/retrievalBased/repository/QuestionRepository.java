@@ -1,6 +1,11 @@
 package com.example.retrievalbased.retrievalBased.repository;
 
 import com.example.retrievalbased.retrievalBased.model.Question;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public interface QuestionRepository extends CrudRepository<Question, Integer> {}
+import java.util.List;
+
+public interface QuestionRepository extends ElasticsearchRepository<Question, Integer> {
+
+  List<Question> findByQuestionText(String questionText);
+}
