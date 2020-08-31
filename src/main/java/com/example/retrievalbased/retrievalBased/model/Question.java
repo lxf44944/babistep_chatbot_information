@@ -2,6 +2,8 @@ package com.example.retrievalbased.retrievalBased.model;
 
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import java.util.*;
@@ -14,12 +16,16 @@ public class Question implements Model {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  @Field(type = FieldType.Keyword)
   @OneToMany(
       mappedBy = "question",
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   private List<Answer> answers;
 
+  @Field(type = FieldType.Keyword)
   private String questionText;
+
+  @Field(type = FieldType.Keyword)
   private int votes;
 
   @Temporal(TemporalType.TIMESTAMP)

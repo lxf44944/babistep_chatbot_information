@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Entity
 @Data
@@ -14,11 +16,16 @@ public class Answer implements Model {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  @Field(type = FieldType.Keyword)
   private String answerText;
 
+  @Field(type = FieldType.Keyword)
   private int votes;
 
-  @ManyToOne @JsonIgnore private Question question;
+  @Field(type = FieldType.Keyword)
+  @ManyToOne
+  @JsonIgnore
+  private Question question;
 
   @Override
   public String getString() {
