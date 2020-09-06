@@ -112,7 +112,7 @@ public class QuestionServiceImpl implements QuestionService {
     HashMap wind = (HashMap) map.get("wind");
     long speed = (long) wind.get("speed");
     HashMap main = (HashMap) map.get("main");
-    long temp = (long) wind.get("temp");
+    long temp = (long) main.get("temp");
     Weather weather = new Weather();
     weather.setWindSpeed(speed);
     weather.setTemp(temp);
@@ -139,7 +139,6 @@ public class QuestionServiceImpl implements QuestionService {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    Place place = new Place();
     HashMap<String, Object> map =
         new Gson().fromJson(content, new TypeToken<HashMap<String, Object>>() {}.getType());
     return map;
