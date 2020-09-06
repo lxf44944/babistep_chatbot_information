@@ -3,6 +3,7 @@ package com.example.retrievalbased.retrievalBased.service;
 import com.example.retrievalbased.retrievalBased.model.Answer;
 import com.example.retrievalbased.retrievalBased.model.Place;
 import com.example.retrievalbased.retrievalBased.model.Question;
+import com.example.retrievalbased.retrievalBased.model.Weather;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,5 +25,7 @@ public interface QuestionService {
    * @param name
    * @return
    */
-  List<Place> GooglePlace(String name) throws IOException, InterruptedException;
+  Place GooglePlace(String name) throws IOException, InterruptedException;
+
+  Weather askWeather(String name) throws IOException, InterruptedException;
 }

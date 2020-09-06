@@ -3,19 +3,20 @@ package com.example.retrievalbased.retrievalBased.service;
 import com.example.retrievalbased.retrievalBased.model.*;
 import com.example.retrievalbased.retrievalBased.repository.ElasticSearchQuestionRepository;
 import com.example.retrievalbased.retrievalBased.repository.QuestionRepository;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -80,28 +81,67 @@ public class QuestionServiceImpl implements QuestionService {
    * @return
    */
   @Override
-  public List<Place> GooglePlace(String name) throws IOException, InterruptedException {
+  public Place GooglePlace(String name) throws IOException, InterruptedException {
     final String apiKey = "YOUR_API_KEY";
     String baseUrl =
         "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
             + name
             + "&key="
             + apiKey;
-    HttpClient client = HttpClient.newHttpClient();
-    HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://webcode.me")).build();
+    HashMap<String, Object> map = convertHelper(baseUrl);
+    HashMap candidates = (HashMap) map.get("candidates");
+    HashMap geometry = (HashMap) candidates.get("geometry");
+    HashMap location = (HashMap) geometry.get("location");
+    long lat = (long) location.get("lat");
+    long lng = (long) location.get("lng");
+    String formatted_address = (String) candidates.get("formatted_address");
+    String placeName = (String) candidates.get("name");
+    Place place = new Place();
+    place.setLat(lat);
+    place.setLng(lng);
+    place.setFormattedAddress(formatted_address);
+    place.setName(placeName);
+    return place;
+  }
 
-    HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
-    BufferedReader reader =
-        new BufferedReader(
-            new InputStreamReader(response.getEntity().getContent(), "UTF-8")); // 待解决
-    StringBuilder builder = new StringBuilder();
-    for (String line = null; (line = reader.readLine()) != null; ) {
-      builder.append(line).append("\n");
+  @Override
+  public Weather askWeather(String name) throws IOException, InterruptedException {
+    final String apiKey = "439d4b804bc8187953eb36d2a8c26a02";
+    String baseUrl = "api.openweathermap.org/data/2.5/weather?q=" + name + "&appid=" + apiKey;
+    HashMap<String, Object> map = convertHelper(baseUrl);
+    HashMap wind = (HashMap) map.get("wind");
+    long speed = (long) wind.get("speed");
+    HashMap main = (HashMap) map.get("main");
+    long temp = (long) wind.get("temp");
+    Weather weather = new Weather();
+    weather.setWindSpeed(speed);
+    weather.setTemp(temp);
+    return weather;
+  }
+
+  /**
+   * Helper method to convert JSONString to HashMap based on the json answer returned by the given
+   * url
+   *
+   * @param baseUrl
+   * @return
+   */
+  private HashMap<String, Object> convertHelper(String baseUrl) {
+    HttpClient client = HttpClientBuilder.create().build();
+    HttpGet request = new HttpGet(baseUrl);
+    String content = null;
+    try {
+      HttpResponse response = client.execute(request);
+      HttpEntity entity = response.getEntity();
+      // Read the contents of an entity and return it as a String.
+      content = EntityUtils.toString(entity);
+      System.out.println(content);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-    String arrayStr = builder.toString();
-    // 转化为list
-    List<Place> answer =
-        (List<Place>) JSONArray.toList(JSONArray.fromObject(arrayStr), Place.class); // 待解决
-    return answer;
+    Place place = new Place();
+    HashMap<String, Object> map =
+        new Gson().fromJson(content, new TypeToken<HashMap<String, Object>>() {}.getType());
+    return map;
   }
 }
